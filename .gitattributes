@@ -1,0 +1,3 @@
+# Prisma가 계약에서 만들어 내는 파일입니다. 손으로 고치지 않습니다.
+prisma/contract.json linguist-generated
+prisma/contract.d.ts linguist-generated

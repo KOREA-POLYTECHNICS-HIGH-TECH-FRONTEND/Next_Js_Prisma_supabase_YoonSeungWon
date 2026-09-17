@@ -1,0 +1,6 @@
+# Prisma가 계약에서 만들어 내는 파일입니다.
+prisma/contract.json
+prisma/contract.d.ts
+
+# 표 구분선을 ---로 유지합니다.
+README.md

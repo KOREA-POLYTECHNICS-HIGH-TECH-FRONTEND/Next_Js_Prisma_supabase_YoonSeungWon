@@ -1,0 +1,69 @@
+// use prisma-8
+// Contract inferred from the live database schema. Edit as needed, then run `prisma contract emit`.
+
+namespace public {
+  // WARNING: Foreign key "id" -> "auth.users" exists in the database, but its target schema is outside the introspected scope, so no relation field was generated. If the target schema is described by an extension pack, add it to extensions and re-run infer.
+  model Profiles {
+    id        Uuid              @id(map: "profiles_pkey")
+    createdAt Timestamptz       @default(now()) @map("created_at")
+    username  String
+    avatarUrl String?           @map("avatar_url")
+    role      pg.enum(UserRole) @default("user")
+    comments  Comments[]
+    posts     Posts[]
+
+    @@rls
+    @@map("profiles")
+  }
+
+  model Posts {
+    id         BigInt       @id(map: "posts_pkey") @default(autoincrement())
+    createdAt  Timestamptz  @default(now()) @map("created_at")
+    content    String
+    userId     Uuid         @default(dbgenerated("auth.uid()")) @map("user_id")
+    imagePath  String?      @map("image_path")
+    viewCount  Int          @default(0) @map("view_count")
+    comments   Comments[]
+    postImages PostImages[]
+    user       Profiles     @relation(fields: [userId], references: [id], onDelete: Cascade, map: "posts_user_id_fkey")
+
+    @@index([userId], map: "posts_user_id_idx")
+    @@rls
+    @@map("posts")
+  }
+
+  model Comments {
+    id        BigInt      @id(map: "comments_pkey") @default(autoincrement())
+    createdAt Timestamptz @default(now()) @map("created_at")
+    content   String
+    postId    BigInt      @map("post_id")
+    userId    Uuid        @default(dbgenerated("auth.uid()")) @map("user_id")
+    post      Posts       @relation(fields: [postId], references: [id], onDelete: Cascade, map: "comments_post_id_fkey")
+    user      Profiles    @relation(fields: [userId], references: [id], onDelete: Cascade, map: "comments_user_id_fkey")
+
+    @@index([postId], map: "comments_post_id_idx")
+    @@index([userId], map: "comments_user_id_idx")
+    @@rls
+    @@map("comments")
+  }
+
+  model PostImages {
+    id        BigInt      @id(map: "post_images_pkey") @default(autoincrement())
+    createdAt Timestamptz @default(now()) @map("created_at")
+    postId    BigInt      @map("post_id")
+    path      String
+    sortOrder Int         @default(0) @map("sort_order")
+    post      Posts       @relation(fields: [postId], references: [id], onDelete: Cascade, map: "post_images_post_id_fkey")
+
+    @@index([path], map: "post_images_path_key", unique: true)
+    @@index([postId], map: "post_images_post_id_idx")
+    @@rls
+    @@map("post_images")
+  }
+
+  native_enum UserRole {
+    user = "user"
+    admin = "admin"
+    @@map("user_role")
+  }
+}
