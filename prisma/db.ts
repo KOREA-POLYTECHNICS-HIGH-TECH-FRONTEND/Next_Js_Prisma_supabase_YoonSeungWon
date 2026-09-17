@@ -1,4 +1,5 @@
 import 'server-only'
+import 'temporal-polyfill/full/global'
 import { Pool } from 'pg'
 import postgres from '@prisma/orm-postgres/runtime'
 import type { Contract } from './contract.d'
