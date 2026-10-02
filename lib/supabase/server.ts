@@ -1,5 +1,6 @@
 import 'server-only'
 import { createServerClient } from '@supabase/ssr'
+import { createClient as createSupabaseClient } from '@supabase/supabase-js'
 import { cookies } from 'next/headers'
 
 // 서버(서버 컴포넌트, 서버 액션, 라우트 핸들러)에서 쓰는 Supabase 클라이언트
@@ -33,6 +34,16 @@ export async function createClient() {
           }
         }
       }
+    }
+  )
+}
+
+export function createAdminClient() {
+  return createSupabaseClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SECRET_KEY!,
+    {
+      auth: { persistSession: false, autoRefreshToken: false }
     }
   )
 }

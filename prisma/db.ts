@@ -27,7 +27,7 @@ const globalForDb = globalThis as unknown as {
 }
 
 export const db = globalForDb.prismaDb ?? createDb()
-
+export const table = db.orm.public
 if (process.env.NODE_ENV !== 'production') {
   globalForDb.prismaDb = db
 }
