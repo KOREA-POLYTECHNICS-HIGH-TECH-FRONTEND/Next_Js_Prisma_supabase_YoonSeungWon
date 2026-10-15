@@ -5,9 +5,15 @@ interface Props {
   name: string
   label?: string
   maxCount?: number
+  onChange?: (files: File[]) => void
 }
 
-export default function ImageField({ name, label, maxCount = 3 }: Props) {
+export default function ImageField({
+  name,
+  label,
+  maxCount = 3,
+  onChange
+}: Props) {
   const [message, setMessage] = useState<string | null>(null)
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
@@ -15,7 +21,9 @@ export default function ImageField({ name, label, maxCount = 3 }: Props) {
 
     if (files.length > maxCount) {
       setMessage(`이미지는 ${maxCount}개까지 선택할 수 있습니다.`)
+      return
     }
+    onChange?.(files)
   }
 
   return (

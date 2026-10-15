@@ -1,15 +1,20 @@
+'use client'
 import MDEditor from '@uiw/react-md-editor'
 import Markdown from '@/components/Markdown'
 import { useState } from 'react'
 
-export default function MarkdownEditor() {
-  const [value, setValue] = useState<string>('# Title')
+interface Props {
+  content?: string
+}
+
+export default function MarkdownEditor({ content = '' }: Props) {
+  const [value, setValue] = useState(content)
 
   return (
     <>
       <MDEditor
         value={value}
-        onChange={setValue}
+        onChange={e => setValue(e!)}
         textareaProps={{
           name: 'content'
         }}
